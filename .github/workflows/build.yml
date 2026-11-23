@@ -1,0 +1,27 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build
+        run: dotnet build TransfertPhotos -c Release
+
+      - name: Publish (exe autonome)
+        run: dotnet publish TransfertPhotos -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TransfertPhotos-exe
+          path: dist/
