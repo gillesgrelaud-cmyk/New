@@ -69,7 +69,9 @@ public sealed class MtpService
             int photos = 0, videos = 0, seen = 0;
             long bytes = 0;
 
-            Walk((object)shell, deviceFolder, new List<string>(), 0, (item, name, segs) =>
+            object shellObj = shell;
+            object folderObj = deviceFolder;
+            Walk(shellObj, folderObj, new List<string>(), 0, (item, name, segs) =>
             {
                 if (++seen % 200 == 0)
                 {
@@ -99,7 +101,9 @@ public sealed class MtpService
             int copied = 0, skipped = 0;
             long bytes = 0;
 
-            Walk((object)shell, deviceFolder, new List<string>(), 0, (item, name, segs) =>
+            object shellObj = shell;
+            object folderObj = deviceFolder;
+            Walk(shellObj, folderObj, new List<string>(), 0, (item, name, segs) =>
             {
                 ct.ThrowIfCancellationRequested();
                 long? size = TryGetSize(item);
@@ -139,9 +143,11 @@ public sealed class MtpService
             return new TransferResult(copied, skipped, bytes);
         });
 
-    private void Walk(dynamic shell, dynamic folder, List<string> segments, int depth,
-        Action<dynamic, string, List<string>> onFile, CancellationToken ct, IProgress<string>? log)
+    private void Walk(object shellObj, object folderObj, List<string> segments, int depth,
+        Action<object, string, List<string>> onFile, CancellationToken ct, IProgress<string>? log)
     {
+        dynamic shell = shellObj;
+        dynamic folder = folderObj;
         if (Interlocked.Increment(ref _foldersVisited) > MaxFolders) return;
 
         dynamic items;
@@ -181,7 +187,7 @@ public sealed class MtpService
             try
             {
                 dynamic sub = shell.NameSpace(item);
-                if (!IsNull(sub)) Walk(shell, sub, segments, depth + 1, onFile, ct, log);
+                if (!IsNull(sub)) Walk((object)shell, (object)sub, segments, depth + 1, onFile, ct, log);
             }
             finally
             {
