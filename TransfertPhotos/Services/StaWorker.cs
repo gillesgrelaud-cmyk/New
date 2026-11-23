@@ -15,9 +15,9 @@ public sealed class StaWorker : IDisposable
         _thread = new Thread(RunLoop)
         {
             IsBackground = true,
-            Name = "TransfertPhotos-STA",
-            ApartmentState = ApartmentState.STA
+            Name = "TransfertPhotos-STA"
         };
+        _thread.SetApartmentState(ApartmentState.STA);
         _thread.Start();
     }
 

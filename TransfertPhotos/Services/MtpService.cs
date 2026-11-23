@@ -69,7 +69,7 @@ public sealed class MtpService
             int photos = 0, videos = 0, seen = 0;
             long bytes = 0;
 
-            Walk(shell, deviceFolder, new List<string>(), 0, (item, name, segs) =>
+            Walk((object)shell, deviceFolder, new List<string>(), 0, (item, name, segs) =>
             {
                 if (++seen % 200 == 0)
                 {
@@ -99,7 +99,7 @@ public sealed class MtpService
             int copied = 0, skipped = 0;
             long bytes = 0;
 
-            Walk(shell, deviceFolder, new List<string>(), 0, (item, name, segs) =>
+            Walk((object)shell, deviceFolder, new List<string>(), 0, (item, name, segs) =>
             {
                 ct.ThrowIfCancellationRequested();
                 long? size = TryGetSize(item);
